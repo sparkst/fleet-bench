@@ -1,0 +1,30 @@
+{
+  "dataset": "ifeval",
+  "provenance": "Phase 1 smoke items authored in this repository using the IFEval instruction-following rule taxonomy (Google, Apache-2.0). Each item is graded by verifiable rules ported here. The real IFEval dataset is loaded with pinned ids in Phase 2; the rule verifiers are the same.",
+  "license": "Apache-2.0 (rule verifiers ported/vendored); authored smoke prompts",
+  "grader": "ifeval_rules",
+  "items": [
+    {
+      "id": "ifeval-smoke-000",
+      "prompt": "Write a short description of the ocean. You must include the word \"tide\". Do not use any commas anywhere in your response.",
+      "rules": [
+        {"rule": "keywords:existence", "keywords": ["tide"]},
+        {"rule": "punctuation:no_comma"}
+      ]
+    },
+    {
+      "id": "ifeval-smoke-001",
+      "prompt": "Write one motivational sentence. Your entire response must end with the exact phrase: You can do it.",
+      "rules": [
+        {"rule": "startend:end_checker", "end_phrase": "You can do it."}
+      ]
+    },
+    {
+      "id": "ifeval-smoke-002",
+      "prompt": "Describe a house cat. Your response must contain at least 20 words.",
+      "rules": [
+        {"rule": "length_constraints:number_words", "relation": "at least", "num_words": 20}
+      ]
+    }
+  ]
+}

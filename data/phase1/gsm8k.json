@@ -1,0 +1,23 @@
+{
+  "dataset": "gsm8k",
+  "provenance": "Phase 1 smoke items authored in this repository in the GSM8K style (grade-school word problem, single integer answer after '####'). The real GSM8K dataset (OpenAI, MIT) is loaded with pinned ids in Phase 2. Grading logic (final-integer extraction and exact match) is identical across phases.",
+  "license": "MIT (authored smoke items; GSM8K itself is MIT)",
+  "grader": "gsm8k_numeric",
+  "items": [
+    {
+      "id": "gsm8k-smoke-000",
+      "question": "Natalia sold clips to 12 friends in April, and then she sold half as many clips in May. How many clips did she sell altogether in April and May?",
+      "answer": "18"
+    },
+    {
+      "id": "gsm8k-smoke-001",
+      "question": "A store had 48 apples. It sold 15 in the morning and 9 in the afternoon. How many apples are left?",
+      "answer": "24"
+    },
+    {
+      "id": "gsm8k-smoke-002",
+      "question": "Tom reads 20 pages each day. How many pages does he read in 2 weeks?",
+      "answer": "280"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+
+# Local run artifacts that are not meant to be committed.
+# Committed reports live under reports/ and are added explicitly.
+results/*/tmp/
+# The provider usage ledger is a local run-accounting artifact, not a deliverable.
+results/*-ledger.jsonl
+.env

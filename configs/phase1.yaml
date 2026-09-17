@@ -1,0 +1,41 @@
+# Phase 1 smoke run config.
+#
+# 3 items per deterministic dataset, 1 per SDLC task type, across every
+# available model. One rate-limited worker per provider, run concurrently.
+#
+# Host sharding: this file runs from a single host. The Codex and Copilot legs
+# reach a host where those CLIs are logged in via ssh, set with the
+# FLEETBENCH_CLI_SSH_HOST environment variable (never committed). API legs and
+# the Claude CLI run locally.
+
+suite: phase1
+date: "2026-09-17"
+host: primary
+seed: 0
+
+datasets:
+  ifeval: 3
+  humaneval: 3
+  trec6: 3
+  gsm8k: 3
+  sanity: 3
+  sdlc: 6        # 1 item per SDLC task type (six task types in the fixture)
+
+providers:
+  - name: groq
+    host: primary
+  - name: hetzner
+    host: primary
+  - name: anthropic
+    host: primary
+  - name: codex
+    host: primary        # execs over ssh via FLEETBENCH_CLI_SSH_HOST
+  - name: copilot
+    host: primary        # execs over ssh via FLEETBENCH_CLI_SSH_HOST
+
+judge:
+  provider: anthropic
+  model: claude-sonnet-5
+  calibration_provider: groq
+  calibration_model: openai/gpt-oss-120b
+  calibration_rate: 0.1

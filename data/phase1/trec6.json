@@ -1,0 +1,13 @@
+{
+  "dataset": "trec6",
+  "provenance": "Phase 1 smoke items authored in this repository using the TREC-6 coarse label taxonomy (ABBR, DESC, ENTY, HUM, LOC, NUM). The real TREC question-classification set is loaded with pinned ids in Phase 2. Grading logic (label extraction and exact match against the 6 classes) is identical across phases.",
+  "license": "Authored smoke items; TREC data is for research use",
+  "grader": "trec6_label",
+  "labels": ["ABBR", "DESC", "ENTY", "HUM", "LOC", "NUM"],
+  "label_help": "ABBR=abbreviation, DESC=description/definition, ENTY=entity, HUM=human, LOC=location, NUM=numeric",
+  "items": [
+    {"id": "trec6-smoke-000", "question": "What does NASA stand for?", "answer": "ABBR"},
+    {"id": "trec6-smoke-001", "question": "Who wrote the play Hamlet?", "answer": "HUM"},
+    {"id": "trec6-smoke-002", "question": "What is the capital of France?", "answer": "LOC"}
+  ]
+}

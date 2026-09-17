@@ -1,0 +1,74 @@
+{
+  "dataset": "sdlc",
+  "provenance": "Authored in this repository (fleet-bench). MIT. A judged suite across six SDLC task types with instance-specific rubrics (four dimensions scored 0 to 5). Judged blind: a judge model scores anonymized responses in randomized order with model ids hidden.",
+  "license": "MIT",
+  "grader": "judge",
+  "items": [
+    {
+      "id": "sdlc-coding-000",
+      "task_type": "coding",
+      "prompt": "Implement a Python function `merge_intervals(intervals)` that takes a list of [start, end] integer pairs and returns the list of merged, non-overlapping intervals sorted by start. Include a short docstring. Return only the code.",
+      "rubric": [
+        {"dimension": "correctness", "desc": "Handles overlap, adjacency, empty input, and unsorted input correctly."},
+        {"dimension": "clarity", "desc": "Readable names, a useful docstring, no dead code."},
+        {"dimension": "robustness", "desc": "Sensible behavior on edge cases and bad input."},
+        {"dimension": "idiomatic_python", "desc": "Uses standard idioms; no needless complexity."}
+      ]
+    },
+    {
+      "id": "sdlc-design-000",
+      "task_type": "design",
+      "prompt": "Design the component architecture for a URL-shortener service that must handle 10,000 reads per second and 100 writes per second. Describe the components, the data store choice, and how reads are kept fast. Keep it under 300 words.",
+      "rubric": [
+        {"dimension": "completeness", "desc": "Covers write path, read path, storage, and caching."},
+        {"dimension": "scalability_fit", "desc": "Choices actually meet the stated read/write load."},
+        {"dimension": "tradeoff_awareness", "desc": "Names at least one real tradeoff and its consequence."},
+        {"dimension": "clarity", "desc": "Well organized and within the length limit."}
+      ]
+    },
+    {
+      "id": "sdlc-reqwrite-000",
+      "task_type": "requirement writing",
+      "prompt": "Write acceptance requirements for a password-reset feature. Produce 4 to 6 testable requirements, each with a clear pass condition. Cover the happy path, an expired token, and rate limiting.",
+      "rubric": [
+        {"dimension": "testability", "desc": "Each requirement has an observable, checkable pass condition."},
+        {"dimension": "coverage", "desc": "Includes happy path, expired token, and rate limiting."},
+        {"dimension": "unambiguous", "desc": "No vague terms; a reader could not interpret two ways."},
+        {"dimension": "scoping", "desc": "No gold-plating; stays on the feature."}
+      ]
+    },
+    {
+      "id": "sdlc-testwrite-000",
+      "task_type": "test writing",
+      "prompt": "Given a function `def clamp(x, lo, hi): return max(lo, min(x, hi))`, write pytest tests that cover the value below range, above range, in range, and the boundaries. Return only the test code.",
+      "rubric": [
+        {"dimension": "coverage", "desc": "Covers below, above, in range, and both boundaries."},
+        {"dimension": "correctness", "desc": "Assertions match the function's real behavior."},
+        {"dimension": "clarity", "desc": "Clear test names and structure."},
+        {"dimension": "edge_focus", "desc": "Targets meaningful edges, not redundant cases."}
+      ]
+    },
+    {
+      "id": "sdlc-codereview-000",
+      "task_type": "code review",
+      "prompt": "Review this function and list concrete issues:\n\n```python\ndef get_user(users, id):\n    for u in users:\n        if u['id'] == id:\n            return u['name']\n```\n\nName any correctness, safety, or clarity problems and how to fix each.",
+      "rubric": [
+        {"dimension": "finds_missing_return", "desc": "Notes the implicit None when no user matches and its impact."},
+        {"dimension": "correctness_depth", "desc": "Identifies real issues, not invented ones."},
+        {"dimension": "actionable", "desc": "Each issue has a concrete fix."},
+        {"dimension": "signal_to_noise", "desc": "Focuses on issues that matter; no padding."}
+      ]
+    },
+    {
+      "id": "sdlc-reqreview-000",
+      "task_type": "requirement review",
+      "prompt": "Review this requirement and improve it:\n\n\"The system should be fast and handle a lot of users.\"\n\nExplain what is wrong with it and rewrite it as one or more testable requirements.",
+      "rubric": [
+        {"dimension": "diagnosis", "desc": "Identifies the vagueness (no metric, no threshold, two concerns)."},
+        {"dimension": "rewrite_testability", "desc": "The rewrite has concrete, checkable numbers."},
+        {"dimension": "completeness", "desc": "Separates performance from capacity."},
+        {"dimension": "clarity", "desc": "Explanation is clear and concise."}
+      ]
+    }
+  ]
+}

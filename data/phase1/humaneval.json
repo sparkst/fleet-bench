@@ -1,0 +1,26 @@
+{
+  "dataset": "humaneval",
+  "provenance": "Phase 1 smoke items authored in this repository in the HumanEval format (function signature + docstring prompt, hidden unit-test 'check'). The real HumanEval dataset (OpenAI, MIT) with its 164 pinned task ids is loaded in Phase 2. The sandboxed unit-test grader with timeouts is identical across phases.",
+  "license": "MIT (authored smoke items; HumanEval itself is MIT)",
+  "grader": "humaneval_exec",
+  "items": [
+    {
+      "id": "humaneval-smoke-000",
+      "entry_point": "add",
+      "prompt": "def add(a: int, b: int) -> int:\n    \"\"\"Return the sum of a and b.\n    >>> add(2, 3)\n    5\n    \"\"\"\n",
+      "test": "def check(candidate):\n    assert candidate(2, 3) == 5\n    assert candidate(-1, 1) == 0\n    assert candidate(0, 0) == 0\n"
+    },
+    {
+      "id": "humaneval-smoke-001",
+      "entry_point": "is_even",
+      "prompt": "def is_even(n: int) -> bool:\n    \"\"\"Return True if n is even, False otherwise.\n    >>> is_even(4)\n    True\n    >>> is_even(7)\n    False\n    \"\"\"\n",
+      "test": "def check(candidate):\n    assert candidate(4) is True\n    assert candidate(7) is False\n    assert candidate(0) is True\n"
+    },
+    {
+      "id": "humaneval-smoke-002",
+      "entry_point": "reverse_string",
+      "prompt": "def reverse_string(s: str) -> str:\n    \"\"\"Return the input string reversed.\n    >>> reverse_string('abc')\n    'cba'\n    \"\"\"\n",
+      "test": "def check(candidate):\n    assert candidate('abc') == 'cba'\n    assert candidate('') == ''\n    assert candidate('racecar') == 'racecar'\n"
+    }
+  ]
+}

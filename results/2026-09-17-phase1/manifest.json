@@ -1,0 +1,150 @@
+{
+  "run_id": "2026-09-17-phase1",
+  "suite": "phase1",
+  "date": "2026-09-17",
+  "hosts": [
+    "primary"
+  ],
+  "git_sha": "687f1cf09802c46d89c73fe8d6ba07b0f07d4d58",
+  "seed": 0,
+  "providers": [
+    "anthropic",
+    "codex",
+    "copilot",
+    "groq",
+    "hetzner"
+  ],
+  "models": [
+    "Qwen/Qwen3.6-35B-A3B-FP8",
+    "Qwen3.8-27B",
+    "allam-2-7b",
+    "claude-haiku-4-5-20251001",
+    "claude-opus-4-8",
+    "claude-opus-5",
+    "claude-sonnet-5",
+    "gpt-5-mini",
+    "gpt-5.4",
+    "gpt-5.6-sol",
+    "groq/compound",
+    "groq/compound-mini",
+    "openai/gpt-oss-120b",
+    "openai/gpt-oss-20b",
+    "qwen/qwen3.8-27b"
+  ],
+  "datasets": {
+    "ifeval": {
+      "dataset": "ifeval",
+      "license": "Apache-2.0 (rule verifiers ported/vendored); authored smoke prompts",
+      "provenance": "Phase 1 smoke items authored in this repository using the IFEval instruction-following rule taxonomy (Google, Apache-2.0). Each item is graded by verifiable rules ported here. The real IFEval dataset is loaded with pinned ids in Phase 2; the rule verifiers are the same.",
+      "count": 3,
+      "sample_ids": [
+        "ifeval-smoke-000",
+        "ifeval-smoke-001",
+        "ifeval-smoke-002"
+      ]
+    },
+    "humaneval": {
+      "dataset": "humaneval",
+      "license": "MIT (authored smoke items; HumanEval itself is MIT)",
+      "provenance": "Phase 1 smoke items authored in this repository in the HumanEval format (function signature + docstring prompt, hidden unit-test 'check'). The real HumanEval dataset (OpenAI, MIT) with its 164 pinned task ids is loaded in Phase 2. The sandboxed unit-test grader with timeouts is identical across phases.",
+      "count": 3,
+      "sample_ids": [
+        "humaneval-smoke-000",
+        "humaneval-smoke-001",
+        "humaneval-smoke-002"
+      ]
+    },
+    "trec6": {
+      "dataset": "trec6",
+      "license": "Authored smoke items; TREC data is for research use",
+      "provenance": "Phase 1 smoke items authored in this repository using the TREC-6 coarse label taxonomy (ABBR, DESC, ENTY, HUM, LOC, NUM). The real TREC question-classification set is loaded with pinned ids in Phase 2. Grading logic (label extraction and exact match against the 6 classes) is identical across phases.",
+      "count": 3,
+      "sample_ids": [
+        "trec6-smoke-000",
+        "trec6-smoke-001",
+        "trec6-smoke-002"
+      ]
+    },
+    "gsm8k": {
+      "dataset": "gsm8k",
+      "license": "MIT (authored smoke items; GSM8K itself is MIT)",
+      "provenance": "Phase 1 smoke items authored in this repository in the GSM8K style (grade-school word problem, single integer answer after '####'). The real GSM8K dataset (OpenAI, MIT) is loaded with pinned ids in Phase 2. Grading logic (final-integer extraction and exact match) is identical across phases.",
+      "count": 3,
+      "sample_ids": [
+        "gsm8k-smoke-000",
+        "gsm8k-smoke-001",
+        "gsm8k-smoke-002"
+      ]
+    },
+    "sanity": {
+      "dataset": "sanity",
+      "license": "MIT",
+      "provenance": "Authored in this repository (fleet-bench). MIT. A trivial 3-class check: classify a common word as one of fruit, furniture, or sports equipment.",
+      "count": 3,
+      "sample_ids": [
+        "sanity-000",
+        "sanity-001",
+        "sanity-002"
+      ]
+    },
+    "sdlc": {
+      "dataset": "sdlc",
+      "license": "MIT",
+      "provenance": "Authored in this repository (fleet-bench). MIT. A judged suite across six SDLC task types with instance-specific rubrics (four dimensions scored 0 to 5). Judged blind: a judge model scores anonymized responses in randomized order with model ids hidden.",
+      "count": 6,
+      "sample_ids": [
+        "sdlc-coding-000",
+        "sdlc-design-000",
+        "sdlc-reqwrite-000",
+        "sdlc-testwrite-000",
+        "sdlc-codereview-000",
+        "sdlc-reqreview-000"
+      ]
+    }
+  },
+  "caps": {
+    "providers": {
+      "copilot": {
+        "max_calls": 150,
+        "skip_multiplier_gt": 5
+      },
+      "codex": {
+        "max_calls": 200
+      },
+      "anthropic": {
+        "max_calls": 1000,
+        "rpm": 0
+      },
+      "groq": {
+        "max_calls": 0,
+        "rpm": 20
+      },
+      "hetzner": {
+        "max_calls": 500,
+        "rpm": 0
+      }
+    },
+    "judge": {
+      "max_calls": 500
+    }
+  },
+  "cap_usage": {
+    "groq": 126,
+    "hetzner": 42,
+    "anthropic": 84,
+    "codex": 21,
+    "copilot": 42,
+    "judge": 85
+  },
+  "judge": {
+    "judged": 77,
+    "calibration": {
+      "enabled": true,
+      "calibration_model": "openai/gpt-oss-120b",
+      "n": 8,
+      "mean_abs_diff": 0.0437
+    }
+  },
+  "started": "2026-09-17T19:03:17Z",
+  "ended": "2026-09-17T19:34:02Z"
+}

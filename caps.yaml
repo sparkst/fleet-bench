@@ -1,0 +1,30 @@
+# Per-provider budget caps for a benchmark run.
+#
+# Defaults here are CALL COUNTS, which are public-safe. The fleet's
+# dashboard-window caps (5-hour and weekly utilization percentages) are a
+# PRIVATE overlay applied at run time by the operator and are deliberately NOT
+# stored in this public repository.
+#
+# max_calls: 0 means unlimited (used for the free providers). It is enforced per
+# `bench.py run` and counts items attempted (not raw requests, which may retry).
+# rpm throttles the provider's own worker; concurrency (default 1) sets how many
+# items run in parallel within that provider. Both are read from here at run time.
+
+providers:
+  copilot:
+    max_calls: 150        # premium requests total across phases
+    skip_multiplier_gt: 5 # skip an item whose cost multiplier exceeds this
+  codex:
+    max_calls: 200
+  anthropic:
+    max_calls: 1000       # private overlay: stop at 40% 5-hour / 50% weekly
+    rpm: 0
+  groq:
+    max_calls: 0          # free; RPM enforced by the provider worker
+    rpm: 20
+  hetzner:
+    max_calls: 500        # per-host daily self-budget (free)
+    rpm: 0
+
+judge:
+  max_calls: 500          # private overlay: stop the judge at 60% 5-hour
