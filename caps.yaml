@@ -25,6 +25,18 @@ providers:
   hetzner:
     max_calls: 500        # per-host daily self-budget (free)
     rpm: 0
+  openrouter:
+    max_calls: 400        # conservative Phase 2 budget
+    rpm: 60
+  gemini:
+    max_calls: 300        # conservative Phase 2 budget; free-tier RPD is tight
+    rpm: 15
+  cloudflare:
+    # Neuron math: the judge model gpt-oss-120b costs ~75 neurons/call, and the
+    # Workers AI free tier is 10000 neurons/day. 10000 / 75 ~= 133; rounded
+    # down to 130 for margin.
+    max_calls: 130
+    rpm: 0
 
 judge:
   max_calls: 500          # private overlay: stop the judge at 60% 5-hour

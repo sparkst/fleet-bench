@@ -12,10 +12,13 @@ from typing import Optional
 
 from .anthropic_cli import AnthropicCLIProvider
 from .base import Completion, Provider, ProviderError, RateLimiter
+from .cloudflare import CloudflareProvider
 from .codex_cli import CodexCLIProvider
 from .copilot_cli import CopilotCLIProvider
+from .gemini import GeminiProvider
 from .groq import GroqProvider
 from .hetzner import HetznerProvider
+from .openrouter import OpenRouterProvider
 
 PROVIDERS: dict[str, type[Provider]] = {
     "groq": GroqProvider,
@@ -23,6 +26,9 @@ PROVIDERS: dict[str, type[Provider]] = {
     "anthropic": AnthropicCLIProvider,
     "codex": CodexCLIProvider,
     "copilot": CopilotCLIProvider,
+    "openrouter": OpenRouterProvider,
+    "gemini": GeminiProvider,
+    "cloudflare": CloudflareProvider,
 }
 
 # Providers whose CLI is not on the local host; the fleet shards them over ssh.

@@ -31,10 +31,17 @@ a run.
 | Anthropic | `claude -p --model <model>` (prompt on stdin) | logged-in `claude` CLI |
 | Codex | `codex exec --skip-git-repo-check --json --model <model>` (prompt on stdin) | logged-in `codex` CLI |
 | Copilot | `copilot -s --allow-all-tools --model <model> -p <prompt>` | logged-in `copilot` CLI |
+| OpenRouter | HTTP (OpenAI-compatible) | `OPENROUTER_API_KEY` |
+| Gemini | HTTP (OpenAI-compatible) | `GEMINI_API_KEY` |
+| Cloudflare Workers AI | HTTP (OpenAI-compatible) | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` |
 
 Keys are read from environment variables only; nothing secret is stored in this
 repo. A model that is not available on a plan is reported as `n/a`, never silently
-skipped.
+skipped. The Cloudflare provider also needs `CLOUDFLARE_ACCOUNT_ID` to build its
+base URL (the account id is never hardcoded); it raises a clear error at
+construction time if that variable is unset. Runs are invoked under
+`doppler run -p claude-code -c dev -- fleetbench ...` so the keys are injected
+from the secrets manager rather than an interactive shell.
 
 Safety note: the Copilot leg runs with `--allow-all-tools` (required for its
 non-interactive mode), which grants the agent tool and shell execution on the host
@@ -131,8 +138,9 @@ public datasets with their pinned ids are used in Phase 2.
 ## Add a provider
 
 1. Add a module under `fleetbench/providers/`. For an OpenAI-compatible HTTP API,
-   subclass `OpenAICompatProvider` (see `groq.py`). For a CLI, subclass
-   `CLIProvider` and set `base_command` with a `{model}` token (see `codex_cli.py`).
+   subclass `OpenAICompatProvider` (see `groq.py`, `openrouter.py`, `gemini.py`,
+   and `cloudflare.py`). For a CLI, subclass `CLIProvider` and set `base_command`
+   with a `{model}` token (see `codex_cli.py`).
 2. Read any key from an environment variable in the constructor.
 3. Register the class in `fleetbench/providers/__init__.py`.
 4. Add a caps entry in `caps.yaml`.
