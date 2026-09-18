@@ -35,6 +35,22 @@ def test_trec6_label_case_insensitive():
     assert grade("trec6_label", TREC_ARGS, "HUM").passed is False
 
 
+def test_trec6_negated_label_is_not_picked_as_final_answer():
+    # The gold label (LOC) appears first but is negated; the real final
+    # answer (ENTY) appears later. Must NOT score this as a LOC pass.
+    r = grade("trec6_label", TREC_ARGS, "Not LOC, it is actually ENTY.")
+    assert r.passed is False
+    assert r.detail["picked"] == "ENTY"
+
+
+def test_trec6_negated_wrong_label_lets_correct_final_answer_pass():
+    # The wrong label (ENTY) appears first but is negated; the gold label
+    # (LOC) is the real final answer.
+    r = grade("trec6_label", TREC_ARGS, "Not ENTY, it is LOC")
+    assert r.passed is True
+    assert r.detail["picked"] == "LOC"
+
+
 # --- gsm8k --------------------------------------------------------------------
 def test_gsm8k_prefers_marker():
     args = {"answer": "18"}
@@ -56,6 +72,19 @@ def test_gsm8k_reports_marker_presence():
     assert with_marker.detail["marker_present"] is True
     fallback = grade("gsm8k_numeric", {"answer": "24"}, "the result is 24")
     assert fallback.detail["marker_present"] is False
+
+
+def test_gsm8k_no_marker_does_not_grab_intermediate_value_as_answer():
+    # Gold (42) appears as an intermediate value earlier in the response;
+    # the real final answer is spelled out in words. With no '####' marker
+    # and no digits on the final clause, this must NOT score as a pass.
+    args = {"answer": 42}
+    response = (
+        "The answer is definitely not 42 ... 42 apples intermediate ... forty-nine"
+    )
+    result = grade("gsm8k_numeric", args, response)
+    assert result.passed is not True
+    assert result.score != 1.0
 
 
 # --- ifeval -------------------------------------------------------------------

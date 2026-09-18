@@ -22,7 +22,7 @@ from .numeric import grade_gsm8k
 
 @dataclass
 class GradeResult:
-    score: float
+    score: Optional[float]
     passed: Optional[bool] = None
     detail: dict = field(default_factory=dict)
 

@@ -25,5 +25,5 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
-      - name: Run tests (offline)
-        run: pytest -q
+      - name: Run tests (offline, network sockets blocked)
+        run: pytest -q --disable-socket --allow-unix-socket

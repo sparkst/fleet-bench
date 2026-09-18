@@ -103,7 +103,9 @@ merges the JSONL from every host into one report.
 
 - Phase 1 (smoke): 3 items per dataset and 1 per SDLC task type, across every
   available model. It must run end to end and publish `reports/<date>-phase1.md`
-  before Phase 2.
+  before Phase 2. Phase 1 is non-discriminative by design (see the caveat banner
+  reporter.py prepends to every phase1 report); do not read its near-universal
+  1.000 scores as a model ranking.
 - Phase 2 (full): IFEval 100, HumanEval 164, TREC-6 200, GSM8K 100, sanity 30, and
   3 items per SDLC task type. Phase 2 loaders fetch the full public datasets with
   pinned ids; the graders are identical to Phase 1.

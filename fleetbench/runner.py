@@ -39,6 +39,24 @@ from .graders.judge import (
 from .scrub import scrub
 from .providers import build_provider
 
+# Row fields that carry free-form success-path text (prompt/response echoed
+# back from a provider). These are scrubbed once, here, at the point a row is
+# serialized to disk, so a future provider leg that happens to echo a local
+# path/hostname in a normal (non-error) response cannot leak it into a
+# committed public results/ jsonl or report appendix. Error paths (na_reason)
+# are already scrubbed at the source and are intentionally excluded here to
+# avoid double-scrubbing.
+_SCRUB_FIELDS_SUCCESS_PATH = ("prompt", "response")
+
+
+def _scrub_row_for_output(row: dict) -> dict:
+    scrubbed = dict(row)
+    for field_name in _SCRUB_FIELDS_SUCCESS_PATH:
+        value = scrubbed.get(field_name)
+        if isinstance(value, str) and value:
+            scrubbed[field_name] = scrub(value)
+    return scrubbed
+
 
 @dataclass
 class RunConfig:
@@ -169,6 +187,10 @@ class Runner:
             row["score"] = result.score
             row["passed"] = result.passed
             row["grade_detail"] = result.detail
+            if result.score is None:
+                # Grader could not extract an answer (e.g. gsm8k with no
+                # marker and no integer on the final line): n/a, not a fail.
+                row["na_reason"] = result.detail.get("na_reason", "grader-no-answer")
         else:
             # Judged suite: scored later.
             row["score"] = None
@@ -344,7 +366,7 @@ class Runner:
         out_dir.mkdir(parents=True, exist_ok=True)
         with (out_dir / f"results-{self.config.host}.jsonl").open("w", encoding="utf-8") as fh:
             for r in rows:
-                fh.write(json.dumps(r) + "\n")
+                fh.write(json.dumps(_scrub_row_for_output(r)) + "\n")
         # Host-scoped manifest so multiple hosts do not clobber each other.
         (out_dir / f"manifest-{self.config.host}.json").write_text(
             json.dumps(manifest, indent=2), encoding="utf-8"

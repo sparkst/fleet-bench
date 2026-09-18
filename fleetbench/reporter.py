@@ -44,11 +44,25 @@ def _scored_rows(rows):
     return [r for r in rows if not r.get("na_reason")]
 
 
+# Suite names that are non-discriminative smoke runs, not model-ranking runs.
+_SMOKE_SUITES = {"phase1", "smoke"}
+
+_SMOKE_CAVEAT = (
+    "> NOTE: This is a smoke run (3 items per dataset, 1 per SDLC task type). "
+    "The near-universal 1.000 scores reflect trivial item difficulty, not "
+    "model quality parity. Do NOT read these tables as a model ranking. See "
+    "the Phase 2 report for discriminative results."
+)
+
+
 def render(rows: list[dict], manifest: dict) -> str:
     out: list[str] = []
     run_id = manifest.get("run_id", "run")
     out.append(f"# fleet-bench report: {run_id}")
     out.append("")
+    if manifest.get("suite") in _SMOKE_SUITES:
+        out.append(_SMOKE_CAVEAT)
+        out.append("")
     out.append(f"- date: {manifest.get('date')}")
     out.append(f"- suite: {manifest.get('suite')}")
     out.append(f"- git sha: {manifest.get('git_sha')}")
@@ -87,7 +101,7 @@ def _accuracy_tables(rows) -> list[str]:
         drows = by_ds[dataset]
         models = sorted({r["model"] for r in drows})
         judged = dataset == "sdlc"
-        metric = "mean judge score (0-1)" if judged else "pass rate"
+        metric = "median judge score (0-1)" if judged else "pass rate"
         out.append(f"### {dataset}")
         out.append("")
         out.append(f"| model | {metric} | mean score | n | n/a |")
