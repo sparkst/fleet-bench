@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import os
 
+from .base import Completion, ProviderError
 from .openai_compat import OpenAICompatProvider
 
 CLOUDFLARE_BASE_URL_TEMPLATE = (
@@ -37,6 +38,7 @@ class CloudflareProvider(OpenAICompatProvider):
                 "Set it before running (never hardcode it)."
             )
         api_key = os.environ.get("CLOUDFLARE_API_TOKEN", "")
+        self._account_id = account_id
         super().__init__(
             base_url=CLOUDFLARE_BASE_URL_TEMPLATE.format(account_id=account_id),
             api_key=api_key,
@@ -50,3 +52,17 @@ class CloudflareProvider(OpenAICompatProvider):
             # Reported (not skipped): the runner records n/a: key-missing.
             return []
         return list(self.models)
+
+    def call(self, model: str, prompt: str) -> Completion:
+        # Belt-and-suspenders: the base scrub() catches generic id shapes, but
+        # this provider knows its OWN account id (interpolated into the URL
+        # and thus liable to be echoed back verbatim by a CF error body), so
+        # strip that exact value from any error text before it can be
+        # persisted to a public artifact.
+        try:
+            return super().call(model, prompt)
+        except ProviderError as exc:
+            if self._account_id and self._account_id in str(exc):
+                scrubbed_msg = str(exc).replace(self._account_id, "[redacted-account-id]")
+                raise ProviderError(scrubbed_msg, retryable=exc.retryable, status=exc.status) from exc
+            raise

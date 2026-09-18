@@ -12,6 +12,7 @@ FAKE_ORG = "org_" + "abc1234567890def"
 FAKE_ORG_DASH = "org-" + "ABC1234567890DEF"
 FAKE_ACCT = "acct_" + "9988776655aa"
 FAKE_ACCOUNT = "account_" + "abcdef123456"
+FAKE_BARE_HEX = "0123456789abcdef" + "0123456789abcdef"
 
 
 def test_scrub_redacts_org_id():
@@ -34,3 +35,12 @@ def test_scrub_leaves_normal_text():
 def test_scrub_redacts_home_dir_username():
     assert scrub("File /Users/alice/proj/x.py line 3") == "File /Users/[user]/proj/x.py line 3"
     assert scrub("at /home/bob/app.py") == "at /home/[user]/app.py"
+
+
+def test_scrub_redacts_bare_32_hex_account_id():
+    # Cloudflare account/zone ids are bare 32-char lowercase hex with no
+    # prefix; interpolated into the base_url, they can be echoed back by an
+    # error body verbatim.
+    assert scrub(f"no access to account {FAKE_BARE_HEX}") == (
+        "no access to account [redacted-hex]"
+    )

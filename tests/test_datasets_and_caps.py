@@ -46,6 +46,19 @@ def test_unknown_dataset_raises():
         ds.load("nope")
 
 
+def test_oversized_count_raises_clear_guard():
+    # configs/phase2.yaml requests full-size counts (e.g. humaneval 164) but
+    # only Phase-1-sized vendored fixtures exist today; this must fail loudly
+    # rather than silently truncate or misbehave.
+    with pytest.raises(ValueError, match="humaneval.*164.*only"):
+        ds.load("humaneval", 164)
+
+
+def test_within_fixture_count_still_works():
+    items = ds.load("humaneval", 1)
+    assert len(items) == 1
+
+
 def test_cap_counter_enforces_limit():
     caps = {"providers": {"copilot": {"max_calls": 2}, "groq": {"max_calls": 0}}}
     c = CapCounter(caps)

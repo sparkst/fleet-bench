@@ -163,6 +163,43 @@ def test_cloudflare_missing_account_id_raises_loudly(monkeypatch):
         CloudflareProvider()
 
 
+def _install_error_opener(monkeypatch, body: bytes, status: int = 500):
+    class _Opener:
+        def open(self, req, timeout):
+            raise urllib.error.HTTPError(req.full_url, status, "error", {}, io.BytesIO(body))
+
+    monkeypatch.setattr(oc, "_OPENER", _Opener())
+
+
+def test_cloudflare_scrubs_own_account_id_from_error_body(monkeypatch):
+    # An error body that echoes the account id back must never surface it,
+    # even though scrub()'s generic patterns do not know this exact value.
+    monkeypatch.setenv("CLOUDFLARE_ACCOUNT_ID", "acct123")
+    monkeypatch.setenv("CLOUDFLARE_API_TOKEN", "cf-key")
+    _install_error_opener(monkeypatch, b'{"error": "no access to account acct123"}')
+    p = CloudflareProvider(sleep=lambda s: None)
+    completion = p.run_item("@cf/openai/gpt-oss-120b", "hi")
+    assert completion.is_na
+    assert "acct123" not in completion.na_reason
+    assert "[redacted-account-id]" in completion.na_reason
+
+
+def test_scrub_redacts_bare_32_hex_account_id_from_error_body(monkeypatch):
+    # Real Cloudflare account ids are bare 32-char lowercase hex, not a
+    # test-friendly slug like "acct123". Cover that shape end to end via the
+    # defensive scrub.py pattern (not the provider's own-id strip above).
+    bare_hex_id = "0123456789abcdef0123456789abcdef"
+    monkeypatch.setenv("CLOUDFLARE_ACCOUNT_ID", bare_hex_id)
+    monkeypatch.setenv("CLOUDFLARE_API_TOKEN", "cf-key")
+    _install_error_opener(
+        monkeypatch, f'{{"error": "no access to account {bare_hex_id}"}}'.encode("utf-8")
+    )
+    p = CloudflareProvider(sleep=lambda s: None)
+    completion = p.run_item("@cf/openai/gpt-oss-120b", "hi")
+    assert completion.is_na
+    assert bare_hex_id not in completion.na_reason
+
+
 # --- configs/phase2.yaml ---------------------------------------------------
 
 

@@ -41,7 +41,10 @@ skipped. The Cloudflare provider also needs `CLOUDFLARE_ACCOUNT_ID` to build its
 base URL (the account id is never hardcoded); it raises a clear error at
 construction time if that variable is unset. Runs are invoked under
 `doppler run -p claude-code -c dev -- fleetbench ...` so the keys are injected
-from the secrets manager rather than an interactive shell.
+from the secrets manager rather than an interactive shell. Concurrency defaults to
+1 per provider intentionally for Phase 2, since the HTTP API legs run locally on
+one host; override via `caps.yaml` or a per-provider `overrides.concurrency` in
+the run config if a provider's rate limit allows more.
 
 Safety note: the Copilot leg runs with `--allow-all-tools` (required for its
 non-interactive mode), which grants the agent tool and shell execution on the host
