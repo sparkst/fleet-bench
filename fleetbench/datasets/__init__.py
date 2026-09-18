@@ -170,11 +170,23 @@ _BUILDERS = {
 
 
 def load(name: str, n: Optional[int] = None) -> list[Item]:
-    """Load dataset ``name``; take the first ``n`` items (pinned order)."""
+    """Load dataset ``name``; take the first ``n`` items (pinned order).
+
+    Raises ``ValueError`` if ``n`` exceeds the number of vendored fixture
+    items: a config that requests a full-size Phase 2 count against the
+    Phase-1-sized fixtures must fail loudly, not silently truncate or
+    misbehave (REQ-FB-03).
+    """
     if name not in _BUILDERS:
         raise KeyError(f"unknown dataset: {name}")
     fx = _read_fixture(name)
     items = _BUILDERS[name](fx)
+    available = len(items)
+    if n is not None and n > available:
+        raise ValueError(
+            f"dataset '{name}' requests {n} items but only {available} vendored "
+            "fixtures are available; the full-size loader has not landed yet"
+        )
     return items[:n] if n is not None else items
 
 

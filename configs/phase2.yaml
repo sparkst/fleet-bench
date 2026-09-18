@@ -1,0 +1,68 @@
+# Phase 2 full run config.
+#
+# Full-size public datasets per REQ-FB-03/REQ-FB-04 Phase 2 sizing, plus 3
+# items per SDLC task type (six task types, 18 items). Keeps the Phase 1
+# providers (anthropic, codex, copilot, groq, hetzner) and adds the three
+# OpenAI-compatible HTTP providers (openrouter, gemini, cloudflare).
+#
+# Host sharding: this file runs from a single host. The Codex and Copilot legs
+# reach a host where those CLIs are logged in via ssh, set with the
+# FLEETBENCH_CLI_SSH_HOST environment variable (never committed). API legs run
+# locally. Keys for the new HTTP providers come from OPENROUTER_API_KEY,
+# GEMINI_API_KEY, CLOUDFLARE_API_TOKEN, and CLOUDFLARE_ACCOUNT_ID.
+
+suite: phase2
+date: "2026-09-17"
+host: primary
+seed: 0
+
+datasets:
+  # TODO Phase 2 dataset expansion: the full-size loaders for these counts
+  # (IFEval 100, HumanEval 164, TREC-6 200, GSM8K 100, sanity 30) do not yet
+  # exist in this repo; only the Phase 1 smoke-sized vendored fixtures are
+  # implemented today. This file records the intended Phase 2 sizing so the
+  # config schema is ready; do not run this suite until the loaders land.
+  ifeval: 100     # TODO Phase 2 dataset expansion
+  humaneval: 164  # TODO Phase 2 dataset expansion
+  trec6: 200      # TODO Phase 2 dataset expansion
+  gsm8k: 100      # TODO Phase 2 dataset expansion
+  sanity: 30      # TODO Phase 2 dataset expansion
+  sdlc: 18        # 3 items per SDLC task type (six task types in the fixture)
+
+providers:
+  - name: anthropic
+    host: primary
+  - name: codex
+    host: primary        # execs over ssh via FLEETBENCH_CLI_SSH_HOST
+  - name: copilot
+    host: primary        # execs over ssh via FLEETBENCH_CLI_SSH_HOST
+  - name: groq
+    host: primary
+  - name: hetzner
+    host: primary
+  - name: openrouter
+    host: primary
+    models:
+      - deepseek/deepseek-chat-v3.1
+      - deepseek/deepseek-r1-0528
+      - qwen/qwen3-coder-30b-a3b-instruct
+      - z-ai/glm-4.6
+      - moonshotai/kimi-k2-0905
+  - name: gemini
+    host: primary
+    models:
+      - gemini-2.5-flash-lite
+      - gemini-2.5-flash
+  - name: cloudflare
+    host: primary
+    models:
+      - "@cf/openai/gpt-oss-120b"
+      - "@cf/openai/gpt-oss-20b"
+      - "@cf/qwen/qwen2.5-coder-32b-instruct"
+
+judge:
+  provider: cloudflare
+  model: "@cf/openai/gpt-oss-120b"
+  calibration_provider: openrouter
+  calibration_model: deepseek/deepseek-chat-v3.1
+  calibration_rate: 0.1
